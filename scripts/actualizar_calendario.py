@@ -1,4 +1,4 @@
-    match = DATE.search(s)
+match = DATE.search(s)
     if not match:
         return ""
     day, month, year = match.groups()
