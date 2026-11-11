@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#142948">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Benxamín C">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Benxamín C · U.D. Santa Mariña</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#edf2f7;color:#172b43;font:13px system-ui,-apple-system,Arial,sans-serif}
+header{background:#142948;color:white;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:9px}
+header img{width:35px;height:40px;object-fit:contain}
+h1{font-size:15px;margin:0}
+header small{font-size:10px}
+main{max-width:1150px;margin:auto;padding:6px}
+.panel{background:white;border-radius:10px;padding:9px;margin-bottom:6px;box-shadow:0 1px 4px #0001}
+h2{font-size:14px;margin:0 0 6px}
+button{border:0;border-radius:7px;padding:8px 7px;background:#285da8;color:white;font-size:12px;font-weight:750;min-height:38px;touch-action:manipulation;cursor:pointer}
+button:disabled{opacity:.4}
+.green{background:#167c4b}
+.red{background:#b13146}
+.grey{background:#63758c}
+input,select{width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:7px;background:white;color:#172b43;font-size:14px}
+label{display:block;margin:7px 0 3px;font-size:12px;font-weight:650}
+.row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.muted{font-size:11px;color:#586b80;margin:5px 0}
+details>summary{cursor:pointer;font-weight:750;list-style:none;min-height:25px}
+details>summary::-webkit-details-marker{display:none}
+details>summary:after{content:' ▾';color:#62768a}
+details[open]>summary:after{content:' ▴'}
+[hidden]{display:none!important}
+.top{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.top>.panel{margin:0;padding:7px;min-width:0}
+.clock{font-size:clamp(27px,7vw,43px);font-weight:900;font-variant-numeric:tabular-nums;text-align:center}
+.phase{font-size:11px;font-weight:750;text-align:center;margin:4px 0}
+.top .muted{text-align:center}
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:3px;text-align:center}
+.score>div{background:#eef2f7;border-radius:7px;padding:4px 2px;min-width:0}
+.score .team{font-size:10px;overflow-wrap:anywhere;min-height:24px}
+.score strong{font-size:27px;display:block}
+.scorecontrols{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px}
+.scorecontrols button{font-size:10px;min-height:34px;padding:4px}
+.players{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.player{min-width:0;background:#edf2f8;border:2px solid transparent;border-radius:9px;padding:7px}
+.player.on{background:#def7e8;border-color:#16804c}
+.player.chosen{background:#dfebff;border-color:#285da8}
+.player-head{display:flex;align-items:center;justify-content:space-between;gap:2px}
+.player h3{margin:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptimer{text-align:center;font-size:clamp(22px,6vw,30px);font-weight:900;font-variant-numeric:tabular-nums;margin:5px 0}
+.player.on .ptimer{color:#137a45}
+.action{width:100%;min-height:42px;font-size:13px}
+.statsline{text-align:center;font-size:11px;margin:7px 0 4px}
+.more{margin-top:5px}
+.more summary{font-size:11px;text-align:center;padding:6px;background:#dce4ef;border-radius:6px}
+.statbuttons{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:5px}
+.statbuttons button{font-size:11px;min-height:38px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+td,th{text-align:right;padding:8px 4px;border-bottom:1px solid #dce4ed;white-space:nowrap}
+td:first-child,th:first-child{text-align:left}
+.resultitem{border-top:1px solid #e3eaf0;padding:9px 0}
+.resultitem:first-child{border:0}
+a{color:#225dad}
+.calendarrow{display:grid;grid-template-columns:75px 1fr;gap:5px;padding:5px 0;border-top:1px solid #eef1f4}
+.calendarrow:first-child{border:0}
+.calendarrow small{color:#61758b}
+.notice{background:#fff7df;border-radius:8px;padding:9px;font-size:11px;margin:7px 0}
+.timeline-event{display:grid;grid-template-columns:53px 1fr;gap:9px;padding:9px 4px;border-bottom:1px solid #e1e8f0}
+.timeline-time{font-weight:800;font-variant-numeric:tabular-nums;color:#285da8}
+.timeline-event strong{font-size:12px}
+.timeline-event small{display:block;color:#63758c;margin-top:3px}
+.timeline-meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+@media(min-width:650px){
+ .players{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:370px){
+ .top>.panel{padding:5px}
+ .top button{font-size:10px;min-height:34px;padding:4px}
+ .player{padding:5px}
+ .player h3{font-size:12px}
+ .score strong{font-size:24px}
+}
+</style>
+</head>
+
+<body>
+<header>
+ <img src="./escudo-ud-santa-marina.png" alt="Escudo" onerror="this.style.display='none'">
+ <div>
+  <h1>Benxamín C · U.D. Santa Mariña</h1>
+  <small>Minutos · Resultados · Goles · Asistencias</small>
+ </div>
+</header>
+
+<main>
+
+<details class="panel" id="authPanel">
+ <summary>☁️ <span id="sync">Preparando…</span></summary>
+ <label>Correo</label>
+ <input id="email" type="email" autocomplete="username">
+ <label>Contraseña</label>
+ <input id="password" type="password" autocomplete="current-password">
+ <div class="row" style="margin-top:6px">
+  <button id="signIn">Entrar</button>
+  <button id="signUp" class="grey">Crear cuenta</button>
+  <button id="signOut" class="red" hidden>Cerrar sesión</button>
+ </div>
+</details>
+
+<details class="panel" id="matchPanel">
+ <summary id="matchLabel">📅 Jornada 6 · CF San Esteban</summary>
+ <label>Seleccionar partido / entrenamiento</label>
+ <select id="matches"></select>
+ <p id="matchInfo" class="muted"></p>
+
+ <div id="trainingCreate" hidden>
+  <label>Fecha</label><input id="trainDate" type="date">
+  <label>Nombre</label><input id="trainName" placeholder="Entreno del jueves">
+  <label>Duración (minutos)</label>
+  <input id="trainMinutes" type="number" min="1" max="180" value="30">
+  <label>Rival / equipos</label>
+  <input id="trainRival" placeholder="Rojo contra Azul">
+  <div class="row">
+   <button id="addTraining" class="green">Crear entrenamiento</button>
+   <button id="cancelTraining" class="grey">Cancelar</button>
+  </div>
+ </div>
+
+ <label>Rival</label>
+ <input id="rival">
+ <button id="deleteTraining" class="red" hidden style="margin-top:7px">🗑 Eliminar entrenamiento</button>
+</details>
+
+<div class="top">
+ <section class="panel">
+  <div class="clock" id="clock">00:00</div>
+  <div class="phase" id="phase">PREPARAR</div>
+  <p class="muted" id="hint">Selecciona 8 titulares</p>
+  <div class="row">
+   <button id="start" class="green">Iniciar</button>
+   <button id="finish" class="red" hidden>Terminar</button>
+   <button id="undo" class="grey">Deshacer</button>
+  </div>
+ </section>
+ <section class="panel">
+  <div class="score">
+   <div><div class="team">Santa Mariña</div><strong id="ours">0</strong></div>
+   <b>–</b>
+   <div><div class="team" id="rivalTitle">Rival</div><strong id="theirs">0</strkeyong></div>
+  </div>
+  <p id="partials" class="muted"></p>
+  <details id="goalsPanel">
+   <summary style="text-align:center;font-size:11px">⚽ Editar marcador</summary>
+   <div class="scorecontrols">
+    <button id="ownPlus" class="green">+ Propio</button>
+    <button id="oppPlus">+ Rival</button>
+    <button id="ownMinus" class="red">− Propio</button>
+    <button id="oppMinus" class="grey">− Rival</button>
+   </div>
+  </details>
+ </section>
+</div>
+
+<section class="panel" style="margin-top:6px">
+ <h2 id="playersTitle">Titulares: 0/8</h2>
+ <div class="players" id="players"></div>
+</section>
+
+<details class="panel" id="timelinePanel">
+ <summary>📋 Cronología del partido <span id="timelineCount"></span></summary>
+ <p class="muted">Entradas, salidas y goles con el minuto del reloj. Los eventos anteriores a esta versión no se pueden reconstruir.</p>
+ <div id="timelineList"></div>
+</details>
+
+<details class="panel" id="calendarPanel">
+ <summary>📆 Calendario y horarios FUTGAL</summary>
+ <p class="muted">Benjamín Segunda · Vigo · Grupo 1</p>
+ <p><a id="futgalLink" target="_blank" rel="noopener noreferrer">Abrir calendario oficial FUTGAL</a></p>
+ <p class="notice">Los horarios no se importan automáticamente todavía. Puedes guardarlos y sincronizarlos con Firebase.</p>
+ <div id="calendarList"></div>
+ <h2 style="margin-top:10px">Editar jornada seleccionada</h2>
+ <div class="grid2">
+  <div><label>Fecha</label><input id="gameDate" type="date"></div>
+  <div><label>Hora</label><input id="gameTime" type="time"></div>
+ </div>
+ <label>Campo</label>
+ <input id="gameField" placeholder="Instalación deportiva">
+ <div class="row" style="margin-top:7px">
+  <button id="saveSchedule" class="green">Guardar fecha, hora y campo</button>
+ </div>
+</details>
+
+<details class="panel" id="historyPanel">
+ <summary>🏆 Historial de resultados</summary>
+ <p class="muted">Los partidos finalizados quedan registrados.</p>
+ <div id="history"></div>
+ <h2>Acumulado de temporada (liga)</h2>
+ <div class="tablewrap">
+  <table>
+   <thead><tr><th>Jugador</th><th>Minutos</th><th>⚽</th><th>👟</th></tr></thead>
+   <tbody id="seasonTable"></tbody>
+  </table>
+ </div>
+</details>
+
+<details class="panel">
+ <summary>📊 Estadísticas completas / Excel</summary>
+ <div class="tablewrap">
+  <table>
+   <thead><tr><th>Jugador</th><th>1.ª / Única</th><th>2.ª</th><th>Total</th><th>⚽</th><th>👟</th></tr></thead>
+   <tbody id="statsTable"></tbody>
+  </table>
+ </div>
+ <div class="row" style="margin-top:8px">
+  <button id="export" class="green">Exportar CSV</button>
+  <button id="reset" class="red">Reiniciar partido</button>
+ </div>
+</details>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+"use strict";
+
+// SUSTITUIR POR TU CLAVE FIREBASE REAL
+const firebaseConfig={
+ apiKey:"AIzaSyAY-ntSe4jskS8wkXdWDYjLSseeFVO2tsM",
+ authDomain:"benxamin-c-santa-marina.firebaseapp.com",
+ projectId:"benxamin-c-santa-marina",
+ storageBucket:"benxamin-c-santa-marina.firebasestorage.app",
+ messagingSenderId:"596374814925",
+ appId:"1:596374814925:web:6c2cbac5f1a360a0f9a984"
+};
+
+const PEOPLE=[
+ [1,"Mauro"],[3,"Javi"],[4,"Elías"],[5,"Brais"],
+ [6,"Xabi"],[7,"Roque"],[8,"Leo Estévez"],
+ [9,"Thiago"],[10,"Enzo"],[11,"Angelo"],
+ [12,"Xes"],[14,"Leo Mendez"]
+];
+
+const GAMES=[
+ {id:"j6",name:"Jornada 6 · CF San Esteban",date:"2026-11-08",rival:"CF San Esteban",type:"league"},
+ {id:"j7",name:"Jornada 7 · Moledo C.F. B",date:"2026-11-15",rival:"Moledo C.F. B",type:"league"},
+ {id:"j8",name:"Jornada 8 · C.D. Nieto A",date:"2026-11-22",rival:"C.D. Nieto A",type:"league"},
+ {id:"j9",name:"Jornada 9 · Club Peñasco A",date:"2026-11-29",rival:"Club Peñasco A",type:"league"}
+];
+
+const KEY="santamarina_firebase_v1";
+const MAX=8;
+const $=id=>document.getElementById(id);
+const sum=x=>(Number(x?.[0])||0)+(Number(x?.[1])||0);
+const FUTGAL="https://futgal.es/pnfg/NPcd/NFG_CmpJornada?cod_primaria=1000120&CodCompeticion=26991813&CodGrupo=28767141&CodTemporada=22&CodJornada=";
+
+let store={entrenamientos:[],partidos:{},calendario:{}};
+let currentId="j6",data=null,history=[];
+let auth=null,db=null,user=null,unsub=null;
+let saveTimer=null,writeQueue=Promise.resolve();
+let loading=false,changing=false;
+const expandedPlayers=new Set();
+
+try{
+ const obj=JSON.parse(localStorage.getItem(KEY)||"null");
+ if(obj&&obj.partidos)
+  store={...store,...obj,calendario:obj.calendario||{}};
+}catch(e){console.warn(e)}
+
+function gById(id){
+ return [...GAMES,...store.entrenamientos].find(g=>g.id===id);
+}
+function training(id=currentId){
+ const g=gById(id);
+ return !!g&&(g.type==="training"||g.tipo==="entreno");
+}
+function duration(){
+ return training()
+  ?Math.max(60,(Number(gById(currentId)?.minutes||gById(currentId)?.minutos)||30)*60)
+  :1500;
+}
+function fresh(g){
+ return {
+  phase:"pre1",half:0,sec:0,stamp:null,
+  selected:[],rival:g.rival||"",
+  score:{ours:[0,0],theirs:[0,0],unassigned:[0,0]},
+  events:[],
+  players:PEOPLE.map(([number,name])=>({
+   number,name,on:false,time:[0,0],
+   goals:[0,0],assists:[0,0]
+  }))
+ };
+}
+function pair(v){
+ if(Array.isArray(v))
+  return [Math.max(0,Number(v[0])||0),Math.max(0,Number(v[1])||0)];
+ return [Math.max(0,Number(v)||0),0];
+}
+function normalize(raw,g){
+ const out=fresh(g);
+ if(!raw||typeof raw!=="object")return out;
+ const phases={
+  pre1:"pre1",playing:"playing",jugando:"playing",
+  break:"break",descanso:"break",done:"done",final:"done"
+ };
+ out.phase=phases[raw.phase??raw.fase]||"pre1";
+ out.half=Math.max(0,Math.min(1,Number(
+  raw.half??(Number(raw.parte||1)-1)
+ )||0));
+ out.sec=Math.max(0,Number(raw.sec??raw.segundos)||0);
+ out.stamp=raw.stamp??raw.actualizado??raw.ultima??null;
+ out.selected=Array.isArray(raw.selected??raw.seleccion)
+  ?(raw.selected??raw.seleccion).map(Number):[];
+ out.rival=String(raw.rival??g.rival??"");
+
+ const s=raw.score??raw.marcador??{};
+ out.score.ours=pair(s.ours??s.propios);
+ out.score.theirs=pair(s.theirs??s.rivales);
+ out.score.unassigned=pair(s.unassigned??s.sinAsignar);
+ out.events=Array.isArray(raw.events)
+  ?raw.events.filter(e=>e&&typeof e==="object"):[];
+ const old=Array.isArray(raw.players)
+  ?raw.players:Array.isArray(raw.jugadores)?raw.jugadores:[];
+ for(const p of out.players){
+  const x=old.find(x=>Number(x.number??x.dorsal)===p.number);
+  if(!x)continue;
+  p.on=Boolean(x.on??x.campo);
+  p.time=pair(x.time??x.tiempos);
+  p.goals=pair(x.goals??x.goles);
+  p.assists=pair(x.assists??x.asistencias);
+ }
+ return out;
+}
+
+function saveLocal(){
+ if(data)store.partidos[currentId]=data;
+ try{localStorage.setItem(KEY,JSON.stringify(store))}
+ catch(e){console.warn(e)}
+}
+function rootRef(){
+ return db.collection("entrenadores").doc(user.uid);
+}
+function cloudRef(id){
+ return rootRef().collection("partidos").doc(id);
+}
+function queueWrite(id,copy){
+ const uid=user?.uid;
+ if(!uid||!db)return;
+ writeQueue=writeQueue.catch(()=>{}).then(()=>
+  db.collection("entrenadores").doc(uid)
+   .collection("partidos").doc(id).set({
+    data:copy,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+   })
+ );
+ writeQueue.catch(e=>{
+  $("sync").textContent="Error guardando: "+e.message;
+ });
+}
+function persist(){
+ saveLocal();
+ if(!user||!db||loading)return;
+ clearTimeout(saveTimer);
+ const id=currentId;
+ const copy=JSON.parse(JSON.stringify(data));
+ $("sync").textContent="Guardando…";
+ saveTimer=setTimeout(()=>{
+  saveTimer=null;
+  queueWrite(id,copy);
+  writeQueue.then(()=>{
+   if(user)$("sync").textContent="Conectado: "+user.email;
+  }).catch(()=>{});
+ },450);
+}
+function mmss(t){
+ const n=Math.max(0,Math.floor(Number(t)||0));
+ return String(Math.floor(n/60)).padStart(2,"0")
+  +":"+String(n%60).padStart(2,"0");
+}
+function setup(){
+ return data.phase==="pre1"||data.phase==="break";
+}
+function timelineMinute(){
+ return (training()?0:data.half*1500)
+  +Math.max(0,Number(data.sec)||0);
+}
+function recordEvent(type,detail={}){
+ if(!Array.isArray(data.events))data.events=[];
+ data.events.push({
+  id:String(Date.now())+"-"+Math.random().toString(36).slice(2,8),
+  type,
+  second:timelineMinute(),
+  half:data.half,
+  at:Date.now(),
+  ...detail
+ });
+}
+function retractEvent(type,match){
+ if(!Array.isArray(data.events))return;
+ for(let i=data.events.length-1;i>=0;i--){
+  const e=data.events[i];
+  if(e.type===type&&match(e)){
+   data.events.splice(i,1);
+   return;
+  }
+ }
+}
+function finishHalf(){
+ data.stamp=null;
+ data.players.forEach(p=>p.on=false);
+ data.selected=[];
+ recordEvent("fin",{
+  text:training()?"Fin del entrenamiento":
+   "Fin de la "+(data.half+1)+".ª parte"
+ });
+ data.phase=training()||data.half===1?"done":"break";
+ history=[];
+ persist();
+}
+function advance(){
+ if(!data||data.phase!=="playing")return;
+ const now=Date.now();
+ const delta=Math.max(0,(now-(Number(data.stamp)||now))/1000);
+ const inc=Math.min(delta,Math.max(0,duration()-data.sec));
+ data.sec+=inc;
+ data.stamp=now;
+ for(const p of data.players){
+  if(p.on)p.time[data.half]+=inc;
+ }
+ if(data.sec>=duration())finishHalf();
+}
+function options(){
+ const select=$("matches");
+ select.replaceChildren();
+ for(const g of [...GAMES,...store.entrenamientos]){
+  select.add(new Option(g.name||g.nombre,g.id));
+ }
+ select.add(new Option("＋ Crear entrenamiento","new"));
+ select.value=currentId;
+}
+function subscribe(){
+ if(unsub){unsub();unsub=null}
+ if(!user||!db)return;
+ const id=currentId;
+ unsub=cloudRef(id).onSnapshot(snap=>{
+  if(id!==currentId||loading||changing||!snap.exists
+    ||saveTimer||snap.metadata.hasPendingWrites)return;
+  if(data?.phase==="playing")return;
+  const raw=snap.data()?.data;
+  if(!raw)return;
+  data=normalize(raw,gById(id));
+  saveLocal();
+  render();
+ },e=>{
+  $("sync").textContent="Error Firebase: "+e.message;
+ });
+}
+async function choose(next){
+ if(changing)return;
+ changing=true;
+ try{
+  if(data){
+   advance();
+   saveLocal();
+   if(saveTimer){
+    clearTimeout(saveTimer);
+    saveTimer=null;
+    if(user&&db)queueWrite(
+     currentId,JSON.parse(JSON.stringify(data))
+    );
+   }
+   await writeQueue.catch(()=>{});
+  }
+  if(unsub){unsub();unsub=null}
+  currentId=next;
+  const g=gById(next);
+  if(!g)return;
+  data=normalize(store.partidos[next],g);
+  history=[];
+  expandedPlayers.clear();
+  if(user&&db){
+   loading=true;
+   try{
+    const snap=await cloudRef(next).get();
+    if(snap.exists&&snap.data()?.data){
+     data=normalize(snap.data().data,g);
+    }else{
+     await cloudRef(next).set({
+      data:JSON.parse(JSON.stringify(data))
+     });
+    }
+   }catch(e){
+    $("sync").textContent="Error cargando: "+e.message;
+   }finally{loading=false}
+  }
+  advance();
+  saveLocal();
+  options();
+  render();
+  subscribe();
+ }finally{
+  changing=false;
+ }
+}
+function person(n){
+ return data.players.find(p=>p.number===n);
+}
+function toggle(n){
+ advance();
+ const p=person(n);
+ if(setup()){
+  const i=data.selected.indexOf(n);
+  if(i>=0)data.selected.splice(i,1);
+  else if(data.selected.length<MAX)data.selected.push(n);
+  else return alert("Selecciona únicamente 8 titulares.");
+ }else if(data.phase==="playing"){
+  if(!p.on&&data.players.filter(x=>x.on).length>=MAX)
+   return alert("Primero saca a un jugador.");
+  history.push({
+   on:data.players.map(x=>x.on),
+   eventCount:(data.events||[]).length
+  });
+  p.on=!p.on;
+  recordEvent(p.on?"entrada":"salida",{
+   number:p.number,name:p.name
+  });
+ }else return;
+ persist();
+ render();
+}
+function start(){
+ advance();
+ if(!setup())return;
+ if(data.selected.length!==8)
+  return alert("Selecciona exactamente 8 titulares.");
+ data.half=data.phase==="break"?1:0;
+ data.sec=0;
+ data.stamp=Date.now();
+ data.phase="playing";
+ data.players.forEach(p=>p.on=data.selected.includes(p.number));
+ data.selected=[];
+ history=[];
+ recordEvent("inicio",{
+  text:training()?"Inicio del entrenamiento":
+   "Inicio de la "+(data.half+1)+".ª parte"
+ });
+ persist();
+ render();
+}
+function finish(){
+ advance();
+ if(data.phase==="playing")finishHalf();
+ render();
+}
+function undo(){
+ advance();
+ if(data.phase!=="playing"||!history.length)
+  return alert("No hay cambios que deshacer.");
+ const old=history.pop();
+ data.players.forEach((p,i)=>p.on=old.on[i]);
+ if(Array.isArray(data.events))
+  data.events.splice(old.eventCount);
+ persist();
+ render();
+}
+function stat(n,field,delta){
+ advance();
+ const p=person(n),h=data.half;
+ if(delta<0&&p[field][h]<=0)return;
+ p[field][h]+=delta;
+
+ if(field==="goals"){
+  data.score.ours[h]+=delta;
+  if(delta>0){
+   recordEvent("gol",{
+    number:p.number,name:p.name,
+    score:sum(data.score.ours)+"-"+sum(data.score.theirs)
+   });
+  }else{
+   retractEvent("gol",e=>e.number===p.number&&e.half===h);
+  }
+ }else if(field==="assists"){
+  if(delta>0){
+   recordEvent("asistencia",{
+    number:p.number,name:p.name
+   });
+  }else{
+   retractEvent("asistencia",e=>e.number===p.number&&e.half===h);
+  }
+ }
+ persist();
+ render();
+}
+function ownGoal(delta){
+ advance();
+ const h=data.half;
+ if(delta<0&&data.score.unassigned[h]<=0)return;
+ data.score.unassigned[h]+=delta;
+ data.score.ours[h]+=delta;
+ if(delta>0){
+  recordEvent("gol-propio",{
+   score:sum(data.score.ours)+"-"+sum(data.score.theirs)
+  });
+ }else{
+  retractEvent("gol-propio",e=>e.half===h);
+ }
+ persist();
+ render();
+}
+function rivalGoal(delta){
+ advance();
+ const h=data.half;
+ const previous=data.score.theirs[h];
+ data.score.theirs[h]=Math.max(0,previous+delta);
+ if(data.score.theirs[h]!==previous){
+  if(delta>0){
+   recordEvent("gol-rival",{
+    score:sum(data.score.ours)+"-"+sum(data.score.theirs)
+   });
+  }else{
+   retractEvent("gol-rival",e=>e.half===h);
+  }
+ }
+ persist();
+ render();
+}
+function btn(label,cls,fn){
+ const b=document.createElement("button");
+ b.type="button";
+ b.textContent=label;
+ b.className=cls;
+ b.onclick=fn;
+ return b;
+}
+function formatDate(s){
+ if(!s)return "Fecha sin confirmar";
+ if(/^\d{4}-\d{2}-\d{2}$/.test(s)){
+  const [y,m,d]=s.split("-");
+  return d+"/"+m+"/"+y;
+ }
+ return s;
+}
+function getSchedule(id){
+ return {...gById(id),...(store.calendario?.[id]||{})};
+}
+function renderCalendar(){
+ const list=$("calendarList");
+ list.replaceChildren();
+ for(const g of GAMES){
+  const v=getSchedule(g.id);
+  const row=document.createElement("div");
+  row.className="calendarrow";
+  const day=document.createElement("div");
+  const strong=document.createElement("strong");
+  strong.textContent=g.id.toUpperCase();
+  const small=document.createElement("small");
+  small.textContent=formatDate(v.date);
+  day.append(strong,document.createElement("br"),small);
+  const info=document.createElement("div");
+  const text=document.createElement("div");
+  text.textContent=(v.rival||g.rival)
+   +(v.time?" · "+v.time:"")
+   +(v.field?" · "+v.field:"");
+  const link=document.createElement("a");
+  link.href=FUTGAL+g.id.slice(1);
+  link.textContent="Ver jornada en FUTGAL";
+  link.target="_blank";
+  link.rel="noopener noreferrer";
+  info.append(text,link);
+  row.append(day,info);
+  list.append(row);
+ }
+ const s=getSchedule(currentId);
+ if(document.activeElement!==$("gameDate"))
+  $("gameDate").value=/^\d{4}-\d{2}-\d{2}$/.test(s.date||"")
+   ?s.date:"";
+ if(document.activeElement!==$("gameTime"))
+  $("gameTime").value=s.time||"";
+ if(document.activeElement!==$("gameField"))
+  $("gameField").value=s.field||"";
+ $("saveSchedule").disabled=training();
+ $("futgalLink").href=FUTGAL+
+  (currentId.startsWith("j")?currentId.slice(1):"6");
+}
+function renderHistory(){
+ const list=$("history");
+ list.replaceChildren();
+ let completed=0;
+
+ for(const g of GAMES){
+  const raw=store.partidos[g.id];
+  if(!raw)continue;
+  const d=normalize(raw,g);
+  if(d.phase!=="done")continue;
+  completed++;
+  const v=getSchedule(g.id);
+  const el=document.createElement("div");
+  el.className="resultitem";
+  const title=document.createElement("div");
+  title.style.fontWeight="750";
+  title.textContent=g.id.toUpperCase()
+   +" · Santa Mariña "+sum(d.score.ours)
+   +" – "+sum(d.score.theirs)+" "+(d.rival||g.rival);
+  const details=document.createElement("div");
+  details.className="muted";
+  details.textContent=formatDate(v.date)
+   +(v.time?" · "+v.time:"")
+   +(v.field?" · "+v.field:"");
+  const open=btn("Ver partido","grey",()=>{
+   choose(g.id);
+   $("historyPanel").open=false;
+   window.scrollTo({top:0,behavior:"smooth"});
+  });
+  el.append(title,details,open);
+  list.append(el);
+ }
+ if(!completed){
+  const p=document.createElement("p");
+  p.className="muted";
+  p.textContent="Todavía no hay partidos finalizados.";
+  list.append(p);
+ }
+ const tbody=$("seasonTable");
+ tbody.replaceChildren();
+ for(const [number,name] of PEOPLE){
+  let secs=0,goals=0,assists=0;
+  for(const g of GAMES){
+   const raw=store.partidos[g.id];
+   if(!raw)continue;
+   const d=normalize(raw,g);
+   if(d.phase!=="done")continue;
+   const p=d.players.find(x=>x.number===number);
+   if(!p)continue;
+   secs+=sum(p.time);
+   goals+=sum(p.goals);
+   assists+=sum(p.assists);
+  }
+  const tr=document.createElement("tr");
+  for(const value of [
+   number+" · "+name,mmss(secs),goals,assists
+  ]){
+   const td=document.createElement("td");
+   td.textContent=value;
+   tr.append(td);
+  }
+  tbody.append(tr);
+ }
+}
+function renderTimeline(){
+ const list=$("timelineList");
+ list.replaceChildren();
+ const events=Array.isArray(data.events)?data.events:[];
+ $("timelineCount").textContent="("+events.length+")";
+
+ if(!events.length){
+  const p=document.createElement("p");
+  p.className="muted";
+  p.textContent="Todavía no hay eventos registrados.";
+  list.append(p);
+  return;
+ }
+ const labels={
+  inicio:"🏁 Inicio",
+  fin:"🏁 Final",
+  entrada:"🟢 Entra",
+  salida:"🔴 Sale",
+  gol:"⚽ Gol",
+  "gol-rival":"⚽ Gol del rival",
+  "gol-propio":"⚽ Gol sin asignar",
+  asistencia:"👟 Asistencia"
+ };
+ for(const e of [...events].reverse()){
+  const item=document.createElement("div");
+  item.className="timeline-event";
+  const time=document.createElement("div");
+  time.className="timeline-time";
+  time.textContent=mmss(e.second);
+  const body=document.createElement("div");
+  const title=document.createElement("strong");
+  title.textContent=(labels[e.type]||"Evento")
+   +(e.name?" · "+e.name:"");
+  const secondary=document.createElement("small");
+  secondary.textContent=[
+   e.text,
+   e.score?"Marcador: "+e.score:null,
+   !training()?"Parte "+(Number(e.half)+1):null
+  ].filter(Boolean).join(" · ");
+  body.append(title,secondary);
+  item.append(time,body);
+  list.append(item);
+ }
+}
+function render(){
+ if(!data)return;
+ const g=gById(currentId);
+ const playing=data.phase==="playing";
+ const sched=getSchedule(currentId);
+
+ $("matchLabel").textContent="📅 "+(g.name||g.nombre||"Partido")
+  +(sched.time?" · "+sched.time:"");
+ $("matches").value=currentId;
+ $("deleteTraining").hidden=!training();
+ $("matchInfo").textContent=training()
+  ?formatDate(g.date)+" · Tiempo corrido · "
+   +(g.minutes||g.minutos||30)+" min"
+  :formatDate(sched.date)
+   +(sched.time?" · "+sched.time:"")
+   +(sched.field?" · "+sched.field:"")
+   +" · Liga · 25 + 25 min";
+
+ if(document.activeElement!==$("rival"))
+  $("rival").value=data.rival;
+
+ $("rivalTitle").textContent=data.rival||"Rival";
+ $("clock").textContent=mmss(
+  (training()?0:data.half*1500)+data.sec
+ );
+ $("start").hidden=!setup();
+ $("finish").hidden=!playing;
+ $("start").textContent=training()?"Iniciar":
+  data.phase==="break"?"Iniciar 2.ª":"Iniciar 1.ª";
+ $("finish").textContent=training()?"Finalizar":
+  data.half===0?"Terminar 1.ª":"Finalizar";
+ $("phase").textContent=playing
+  ?training()?"ENTRENO · CORRIDO":
+   data.half===0?"1.ª PARTE":"2.ª PARTE"
+  :({
+   pre1:"PREPARAR",break:"DESCANSO",done:"FINALIZADO"
+  })[data.phase];
+
+ $("hint").textContent=setup()?"Selecciona 8 titulares":
+  playing?"Sacar y después meter":"Reloj parado";
+
+ $("ours").textContent=sum(data.score.ours);
+ $("theirs").textContent=sum(data.score.theirs);
+ $("partials").textContent=training()?"Tiempo único":
+  "1.ª "+data.score.ours[0]+"-"+data.score.theirs[0]
+  +" · 2.ª "+data.score.ours[1]+"-"+data.score.theirs[1];
+
+ $("playersTitle").textContent=setup()
+  ?"Titulares: "+data.selected.length+"/8"
+  :"En campo: "+data.players.filter(p=>p.on).length+"/8";
+
+ const area=$("players");
+ area.replaceChildren();
+
+ for(const p of data.players){
+  const chosen=data.selected.includes(p.number);
+  const card=document.createElement("div");
+  card.className="player"
+   +(playing&&p.on?" on":"")
+   +(setup()&&chosen?" chosen":"");
+
+  const head=document.createElement("div");
+  head.className="player-head";
+  const title=document.createElement("h3");
+  title.textContent=p.number+" · "+p.name;
+  const dot=document.createElement("span");
+  dot.textContent=setup()?(chosen?"✓":""):
+   playing?(p.on?"🟢":"⚪"):"";
+  head.append(title,dot);
+
+  const timer=document.createElement("div");
+  timer.className="ptimer";
+  timer.textContent=mmss(sum(p.time));
+
+  const action=btn(
+   setup()?(chosen?"✓ TITULAR":"SELECCIONAR"):
+   playing?(p.on?"SACAR":"METER"):"FINALIZADO",
+   "action "+(p.on?"green":"grey"),
+   ()=>toggle(p.number)
+  );
+  action.disabled=data.phase==="done";
+
+  const stats=document.createElement("div");
+  stats.className="statsline";
+  stats.textContent="⚽ "+sum(p.goals)
+   +" · 👟 "+sum(p.assists);
+
+  const details=document.createElement("details");
+  details.className="more";
+  details.open=expandedPlayers.has(p.number);
+  details.addEventListener("toggle",()=>{
+   if(details.open)expandedPlayers.add(p.number);
+   else expandedPlayers.delete(p.number);
+  });
+
+  const summary=document.createElement("summary");
+  summary.textContent="Goles / Asistencias";
+  const controls=document.createElement("div");
+  controls.className="statbuttons";
+  controls.append(
+   btn("+ Gol","green",()=>stat(p.number,"goals",1)),
+   btn("− Gol","red",()=>stat(p.number,"goals",-1)),
+   btn("+ Asist.","",()=>stat(p.number,"assists",1)),
+   btn("− Asist.","grey",()=>stat(p.number,"assists",-1))
+  );
+  details.append(summary,controls);
+  card.append(head,timer,action,stats,details);
+  area.append(card);
+ }
+
+ const tbody=$("statsTable");
+ tbody.replaceChildren();
+ for(const p of data.players){
+  const tr=document.createElement("tr");
+  if(playing&&p.on)tr.style.background="#def7e8";
+  const values=[
+   p.number+" · "+p.name,
+   mmss(p.time[0]),
+   training()?"—":mmss(p.time[1]),
+   mmss(sum(p.time)),
+   sum(p.goals),
+   sum(p.assists)
+  ];
+  for(const value of values){
+   const td=document.createElement("td");
+   td.textContent=value;
+   tr.append(td);
+  }
+  tbody.append(tr);
+ }
+ renderCalendar();
+ renderHistory();
+ renderTimeline();
+}
+
+function exportCSV(){
+ advance();
+ saveLocal();
+ const rows=[[
+  "Dorsal","Jugador","Primera / Única",
+  "Segunda","Total","Goles","Asistencias"
+ ]];
+ for(const p of data.players){
+  rows.push([
+   p.number,p.name,mmss(p.time[0]),
+   training()?"":mmss(p.time[1]),
+   mmss(sum(p.time)),sum(p.goals),sum(p.assists)
+  ]);
+ }
+ rows.push([]);
+ rows.push(["Cronología","Minuto","Evento","Jugador","Marcador"]);
+ for(const e of data.events||[]){
+  rows.push([
+   "",mmss(e.second),e.type,e.name||"",e.score||""
+  ]);
+ }
+ rows.push([]);
+ rows.push(["Partido",gById(currentId).name]);
+ rows.push(["Rival",data.rival]);
+ rows.push([
+  "Marcador",
+  sum(data.score.ours)+"-"+sum(data.score.theirs)
+ ]);
+ const csv="\uFEFF"+rows.map(r=>
+  r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"')
+   .join(";")
+ ).join("\r\n");
+ const url=URL.createObjectURL(
+  new Blob([csv],{type:"text/csv;charset=utf-8"})
+ );
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="SantaMarina_"+currentId+".csv";
+ document.body.append(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+
+async function deleteTraining(){
+ if(!training())return;
+ if(!confirm(
+  "¿Eliminar este entrenamiento y sus estadísticas de Firebase?"
+ ))return;
+
+ const id=currentId;
+ const remaining=store.entrenamientos.filter(g=>g.id!==id);
+ clearTimeout(saveTimer);
+ saveTimer=null;
+ if(unsub){unsub();unsub=null}
+ await writeQueue.catch(()=>{});
+
+ if(user&&db){
+  try{
+   const root=rootRef();
+   await root.collection("partidos").doc(id).delete();
+   await root.collection("config").doc("entrenamientos")
+    .set({lista:remaining});
+  }catch(e){
+   alert("No se pudo borrar en Firebase: "+e.message);
+   subscribe();
+   return;
+  }
+ }
+ delete store.partidos[id];
+ store.entrenamientos=remaining;
+ data=null;
+ saveLocal();
+ await choose("j6");
+ alert("Entrenamiento eliminado.");
+}
+
+async function saveSchedule(){
+ if(training())return;
+ const id=currentId;
+ const entry={
+  date:$("gameDate").value||gById(id).date,
+  time:$("gameTime").value,
+  field:$("gameField").value.trim()
+ };
+ store.calendario=store.calendario||{};
+ store.calendario[id]=entry;
+ saveLocal();
+
+ if(user&&db){
+  try{
+   await rootRef().collection("config").doc("calendario")
+    .set({
+     jornadas:store.calendario,
+     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }catch(e){
+   alert("Guardado local, pero falló Firebase: "+e.message);
+   return;
+  }
+ }
+ render();
+ alert("Horario guardado.");
+}
+
+$("matches").onchange=e=>{
+ if(e.target.value==="new"){
+  $("trainingCreate").hidden=false;
+  $("matches").value=currentId;
+  return;
+ }
+ $("trainingCreate").hidden=true;
+ choose(e.target.value);
+};
+$("cancelTraining").onclick=()=>{
+ $("trainingCreate").hidden=true;
+};
+
+$("addTraining").onclick=async()=>{
+ const date=$("trainDate").value;
+ const name=$("trainName").value.trim();
+ const minutes=Number($("trainMinutes").value);
+ if(!date||!name||!Number.isFinite(minutes)
+  ||minutes<1||minutes>180){
+  return alert("Indica fecha, nombre y duración.");
+ }
+ const g={
+  id:"entreno-"+Date.now(),
+  name:"Entreno · "+name,
+  date,
+  rival:$("trainRival").value.trim()||name,
+  type:"training",
+  minutes
+ };
+ store.entrenamientos.push(g);
+ saveLocal();
+ if(user&&db){
+  try{
+   await rootRef().collection("config").doc("entrenamientos")
+    .set({lista:store.entrenamientos});
+  }catch(e){
+   alert("Error Firebase: "+e.message);
+  }
+ }
+ $("trainingCreate").hidden=true;
+ await choose(g.id);
+};
+
+$("deleteTraining").onclick=deleteTraining;
+$("saveSchedule").onclick=saveSchedule;
+$("rival").onchange=e=>{
+ data.rival=e.target.value.trim();
+ persist();
+ render();
+};
+$("start").onclick=start;
+$("finish").onclick=finish;
+$("undo").onclick=undo;
+$("ownPlus").onclick=()=>ownGoal(1);
+$("ownMinus").onclick=()=>ownGoal(-1);
+$("oppPlus").onclick=()=>rivalGoal(1);
+$("oppMinus").onclick=()=>rivalGoal(-1);
+$("export").onclick=exportCSV;
+
+$("reset").onclick=()=>{
+ if(!confirm("¿Borrar las estadísticas de este partido?"))return;
+ data=fresh(gById(currentId));
+ history=[];
+ persist();
+ render();
+};
+
+/* FIREBASE */
+const configured=Boolean(
+ firebaseConfig.apiKey&&
+ !firebaseConfig.apiKey.startsWith("PEGA_")
+);
+
+if(configured&&typeof firebase!=="undefined"){
+ try{
+  firebase.initializeApp(firebaseConfig);
+  auth=firebase.auth();
+  db=firebase.firestore();
+  $("sync").textContent="Firebase listo · Inicia sesión";
+
+  $("signIn").onclick=()=>
+   auth.signInWithEmailAndPassword(
+    $("email").value,$("password").value
+   ).catch(e=>alert(e.message));
+
+  $("signUp").onclick=()=>
+   auth.createUserWithEmailAndPassword(
+    $("email").value,$("password").value
+   ).catch(e=>alert(e.message));
+
+  $("signOut").onclick=()=>auth.signOut();
+
+  auth.onAuthStateChanged(async u=>{
+   user=u;
+   $("signOut").hidden=!u;
+   $("signIn").hidden=!!u;
+   $("signUp").hidden=!!u;
+
+   if(!u){
+    if(unsub){unsub();unsub=null}
+    $("sync").textContent="Sesión cerrada · Modo local";
+    return;
+   }
+
+   $("sync").textContent="Conectado: "+u.email;
+
+   try{
+    const root=rootRef();
+    const [tr,cal,played]=await Promise.all([
+     root.collection("config").doc("entrenamientos").get(),
+     root.collection("config").doc("calendario").get(),
+     root.collection("partidos").get()
+    ]);
+
+    if(tr.exists&&Array.isArray(tr.data().lista)){
+     store.entrenamientos=tr.data().lista;
+    }
+    if(cal.exists&&cal.data()?.jornadas){
+     store.calendario=cal.data().jornadas;
+    }
+    for(const doc of played.docs){
+     const g=gById(doc.id);
+     if(!g)continue;
+     const raw=doc.data()?.data;
+     if(raw)store.partidos[doc.id]=normalize(raw,g);
+    }
+    saveLocal();
+    options();
+    render();
+   }catch(e){
+    $("sync").textContent="Error historial: "+e.message;
+   }
+
+   await choose(currentId);
+  });
+ }catch(e){
+  $("sync").textContent="Error Firebase: "+e.message;
+ }
+}else{
+ $("sync").textContent="Modo local · Configura apiKey";
+}
+
+/* INICIO */
+options();
+choose("j6");
+
+setInterval(()=>{
+ if(data&&data.phase==="playing"){
+  advance();
+  saveLocal();
+  render();
+ }
+},1000);
+
+document.addEventListener("visibilitychange",()=>{
+ if(!document.hidden&&data){
+  advance();
+  saveLocal();
+  render();
+ }
+});
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker.register("./sw.js")
+   .catch(e=>console.warn("PWA",e));
+ });
+}
+</script>
+</body>
+</html>

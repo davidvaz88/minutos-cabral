@@ -1,0 +1,32 @@
+BENXAMÍN C — INSTALAR COMO APP (PWA)
+
+1. En el repositorio de GitHub, junto a index.html, añade los cuatro archivos:
+   manifest.webmanifest, sw.js, icon-192.png e icon-512.png.
+   No sustituyas ni borres index.html ni el escudo existente.
+
+2. En index.html, justo ANTES de </head>, añade:
+   <link rel="manifest" href="./manifest.webmanifest">
+   <link rel="apple-touch-icon" href="./icon-192.png">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+   <meta name="apple-mobile-web-app-title" content="Benxamín C">
+
+3. En index.html, justo ANTES de </body>, añade:
+   <script>
+   if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+       navigator.serviceWorker.register('./sw.js')
+         .catch(e => console.warn('Service worker:',e));
+     });
+   }
+   </script>
+
+4. Guarda los cambios y espera a GitHub Pages.
+
+5. iPhone: abre la URL en Safari, botón Compartir, Añadir a pantalla de inicio y confirma.
+   Android: abre la URL en Chrome y menú Instalar aplicación / Añadir a pantalla de inicio.
+
+NOTA: No se ha cambiado Firebase ni la lógica de los partidos. El acceso sin
+conexión no garantiza sincronización ni funcionamiento íntegro de Firebase.
+No cierres partidos ni realices sustituciones confiando en su sincronización
+si el teléfono está sin Internet.

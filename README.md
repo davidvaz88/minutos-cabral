@@ -1,2 +1,2 @@
-# minutos-cabral
-Control de minutos Benjamín Cabral
+# minutos-benjamines
+Control de minutos de fútbol base
